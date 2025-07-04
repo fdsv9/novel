@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI小说创作工具 - Novel Creator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📚 AI驱动的小说创作工具</h1>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="novels">我的小说</button>
+                <button class="nav-tab" data-tab="editor">编辑器</button>
+                <button class="nav-tab" data-tab="characters">角色管理</button>
+                <button class="nav-tab" data-tab="ai-assistant">AI助手</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Novels Tab -->
+            <div id="novels-tab" class="tab-content active">
+                <div class="section-header">
+                    <h2>我的小说列表</h2>
+                    <button id="create-novel-btn" class="btn btn-primary">创建新小说</button>
+                </div>
+                <div id="novels-list" class="novels-grid">
+                    <!-- Novels will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Editor Tab -->
+            <div id="editor-tab" class="tab-content">
+                <div class="editor-container">
+                    <div class="editor-sidebar">
+                        <div class="novel-info">
+                            <h3 id="current-novel-title">选择一个小说进行编辑</h3>
+                            <p id="current-novel-stats">字数: 0</p>
+                        </div>
+                        <div class="chapters-list">
+                            <div class="section-header">
+                                <h4>章节</h4>
+                                <button id="add-chapter-btn" class="btn btn-small">新增章节</button>
+                            </div>
+                            <div id="chapters-container">
+                                <!-- Chapters will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="editor-main">
+                        <div class="editor-toolbar">
+                            <input type="text" id="chapter-title" placeholder="章节标题" class="chapter-title-input">
+                            <div class="toolbar-actions">
+                                <button id="save-chapter-btn" class="btn btn-success">保存</button>
+                                <button id="ai-continue-btn" class="btn btn-ai">AI续写</button>
+                            </div>
+                        </div>
+                        <textarea id="chapter-content" placeholder="开始写作您的章节内容..." class="editor-textarea"></textarea>
+                        <div class="editor-stats">
+                            <span id="word-count">字数: 0</span>
+                            <span id="char-count">字符: 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Characters Tab -->
+            <div id="characters-tab" class="tab-content">
+                <div class="section-header">
+                    <h2>角色管理</h2>
+                    <button id="create-character-btn" class="btn btn-primary">创建新角色</button>
+                </div>
+                <div id="characters-list" class="characters-grid">
+                    <!-- Characters will be loaded here -->
+                </div>
+            </div>
+
+            <!-- AI Assistant Tab -->
+            <div id="ai-assistant-tab" class="tab-content">
+                <div class="ai-tools">
+                    <h2>AI写作助手</h2>
+                    
+                    <div class="ai-tool-section">
+                        <h3>📝 故事续写</h3>
+                        <textarea id="ai-context" placeholder="输入当前故事内容..." rows="4"></textarea>
+                        <div class="ai-controls">
+                            <select id="tone-select">
+                                <option value="neutral">中性</option>
+                                <option value="dramatic">戏剧性</option>
+                                <option value="humorous">幽默</option>
+                                <option value="mysterious">神秘</option>
+                            </select>
+                            <button id="ai-continue-story-btn" class="btn btn-ai">AI续写</button>
+                        </div>
+                        <div id="ai-suggestions" class="ai-output"></div>
+                    </div>
+
+                    <div class="ai-tool-section">
+                        <h3>🎭 角色发展</h3>
+                        <select id="character-select">
+                            <option value="">选择角色</option>
+                        </select>
+                        <textarea id="scenario-input" placeholder="描述情境..." rows="3"></textarea>
+                        <button id="ai-develop-character-btn" class="btn btn-ai">获取角色发展建议</button>
+                        <div id="character-suggestions" class="ai-output"></div>
+                    </div>
+
+                    <div class="ai-tool-section">
+                        <h3>📖 情节建议</h3>
+                        <textarea id="plot-input" placeholder="当前情节概要..." rows="3"></textarea>
+                        <button id="ai-plot-suggestions-btn" class="btn btn-ai">获取情节建议</button>
+                        <div id="plot-suggestions" class="ai-output"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="novel-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="novel-modal-title">创建新小说</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="novel-form">
+                    <input type="hidden" id="novel-id">
+                    <div class="form-group">
+                        <label for="novel-title">小说标题:</label>
+                        <input type="text" id="novel-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="novel-description">简介:</label>
+                        <textarea id="novel-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="novel-genre">类型:</label>
+                        <select id="novel-genre">
+                            <option value="fantasy">奇幻</option>
+                            <option value="romance">言情</option>
+                            <option value="mystery">悬疑</option>
+                            <option value="scifi">科幻</option>
+                            <option value="historical">历史</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-novel-btn">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="character-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="character-modal-title">创建新角色</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="character-form">
+                    <input type="hidden" id="character-id">
+                    <div class="form-group">
+                        <label for="character-name">角色姓名:</label>
+                        <input type="text" id="character-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-role">角色类型:</label>
+                        <select id="character-role">
+                            <option value="protagonist">主角</option>
+                            <option value="antagonist">反角</option>
+                            <option value="supporting">配角</option>
+                            <option value="minor">次要角色</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-description">角色描述:</label>
+                        <textarea id="character-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-personality">性格特点:</label>
+                        <textarea id="character-personality" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-background">背景故事:</label>
+                        <textarea id="character-background" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="character-appearance">外貌描述:</label>
+                        <textarea id="character-appearance" rows="2"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-character-btn">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
